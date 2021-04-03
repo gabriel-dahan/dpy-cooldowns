@@ -15,26 +15,6 @@ class DatabaseConnection(object):
         loop.run_until_complete(self._create_db())
 
     async def _create_db(self):
-        connection = await asyncpg.connect(
-            database = self._database,
-            user = self._user,
-            password = self._password,
-            host = self._host
-        )
-
-        await connection.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS cooldowns(
-                    user_id bigint,
-                    command varchar(255),
-                    timestamp timestamp,
-                    seconds integer
-                );
-            '''
-        )
-
-        await connection.close()
-
         self.pool = await asyncpg.create_pool(
             database = self._database,
             user = self._user,

@@ -1,6 +1,6 @@
 # dpy-psql-cooldowns (BETA)
 
-`dpy-psql-cooldowns` is a module that allows you to create database cooldowns with discordpy & PostgreSQL.
+`dpy-psql-cooldowns` is a module that allows you to create database cooldowns with discordpy & PostgreSQL (for now).
 
 Here's the [documentation](https://docs.gabrieldahan.me/dpy-psql-cooldowns/) (not available at the moment).
 
@@ -11,7 +11,7 @@ db = cooldowns.DatabaseConnection('database', 'user', 'host', 'password')
 
 cooldown = cooldowns.Cooldown(db)
 
-@cooldown.start(10) # 10 seconds
+@cooldown.check(10) # 10 seconds
 @bot.command(name = 'foo')
 async def foo(ctx):
     await ctx.send('Test')
@@ -30,7 +30,12 @@ embed = discord.Embed(
 )
 db = cooldowns.DatabaseConnection('database', 'user', 'host', 'password')
 
-cooldown = cooldowns.Cooldown(db, on_cooldown = embed)
+cooldown = cooldowns.Cooldown(db)
+
+@cooldown.check(10, on_cooldown = embed) # on_cooldown error message will be 'embed' 
+@bot.command(name = 'foo')
+async def foo(ctx):
+    await ctx.send('Test')
 ``` 
 
 Note that ``{time}`` is used to show the time left and ``{unit}`` the unit corresponding to the remaining time. 

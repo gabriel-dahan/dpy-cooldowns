@@ -1,21 +1,21 @@
 import discord
 from discord.ext import commands
 
-import cooldowns
+from psql.cooldowns import DatabaseConnection, Cooldown
 
 intents = discord.Intents.default()
 intents.members = True
 
 bot = commands.Bot(command_prefix = ".", intents = intents)
 
-db = cooldowns.DatabaseConnection('database', 'user', 'host', 'password')
-cooldown = cooldowns.Cooldown(db)
+_database = DatabaseConnection('database', 'user', 'host', 'password')
+cooldown = Cooldown(_database)
 
 @bot.event
 async def on_ready():
     print('Ready !')
 
-@cooldown.start(20)
+@cooldown.check(20)
 @bot.command(name = 'foo')
 async def foo(ctx):
     await ctx.send('Not on cooldown.')
