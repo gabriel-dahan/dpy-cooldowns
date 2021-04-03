@@ -1,1 +1,1 @@
-from psql.cooldowns import Cooldown, DatabaseConnection
+from psql.cooldowns import Cooldowns, DatabaseConnection

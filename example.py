@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from psql.cooldowns import DatabaseConnection, Cooldown
+from dpy_cooldowns import DatabaseConnection, Cooldown
 
 intents = discord.Intents.default()
 intents.members = True
