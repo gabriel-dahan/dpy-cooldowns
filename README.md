@@ -1,8 +1,8 @@
-# dpy-psql-cooldowns (BETA)
+# dpy_cooldowns (BETA)
 
-`dpy-psql-cooldowns` is a module that allows you to create database cooldowns with discordpy & PostgreSQL (for now).
+`dpy_cooldowns` is a module that allows you to create database cooldowns with discordpy & PostgreSQL (for now).
 
-Here's the [documentation](https://docs.gabrieldahan.me/dpy-psql-cooldowns/) (not available at the moment).
+Here's the [documentation](https://docs.gabrieldahan.me/dpy-cooldowns/) (not available at the moment).
 
 ## Examples :
 
