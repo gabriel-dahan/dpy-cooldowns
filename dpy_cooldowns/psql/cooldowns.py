@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import asyncio
 
 from .database import DatabaseConnection
+from ..errors import CommandOnCooldown
 
 class Cooldown(object):
 
@@ -48,9 +49,6 @@ class Cooldown(object):
             return True
         return commands.check(predicate)
 
-    def cog_check(self, seconds: int) -> command.check:
-        
-
     async def add(self, seconds: int, user: Union[discord.User, discord.Member], command: commands.Command) -> None:
         """Adds a cooldown for a user on a command."""
         c = await self.is_on_cooldown(user, command)
@@ -81,6 +79,3 @@ class Cooldown(object):
             if datetime.now() <= future:
                 timeleft = future - datetime.now()
                 return timeleft.seconds + timeleft.days * (24 * 60 ** 2)
-
-class CommandOnCooldown(commands.CheckFailure):
-    def __init__(self, error): self.error = error
