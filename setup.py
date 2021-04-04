@@ -1,10 +1,14 @@
-from distutils.core import setup
+import setuptools
 
-setup(
-    name = 'dpy_cooldowns',
-    version = '1.0',
-    description = 'Module that allows you to create database cooldowns w/discord.py',
-    author = 'Gabriel D.',
-    author_email = 'gabrieldahan05@gmail.com',
-    url = 'https://github.com/TheGabDooSan/dpy-psql-cooldowns',
+setuptools.setup(
+    name = "dpy-cooldowns",
+    version = "1.0",
+    author = "Gabriel D.",
+    description = "A package allowing you to create database command cooldowns w/discord.py.",
+    url = "https://github.com/TheGabDooSan/dpy-cooldowns",
+    packages = setuptools.find_packages(),
+    python_requires = '>=3.6',
+    classifiers=[
+        "Programming Language :: Python :: 3"
+    ]
 )
