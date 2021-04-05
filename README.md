@@ -4,12 +4,30 @@
 
 Here's the [documentation](https://docs.gabrieldahan.me/dpy-cooldowns/) (not available at the moment).
 
-## Examples :
+## Getting Started :
 
+### Install and Import the module :
+**Python 3.5.3 or higher.**
+Installing the module :
+```bash
+~ git clone https://github.com/gabriel-dahan/dpy-cooldowns/
+~ cd dpy-cooldowns/
+
+# Linux / MacOS
+~ python3 -m pip install -U .
+
+# Windows 
+~ py -3 -m pip install -U .
+```
+Importing the module :
 ```python
-db = cooldowns.DatabaseConnection('database', 'user', 'host', 'password')
+from dpy_cooldowns import psql # PostgreSQL support
+```
 
-cooldown = cooldowns.Cooldown(db)
+### Example Code :
+```python
+_database = psql.DatabaseConnection('database', 'user', 'host', 'password')
+cooldown = psql.Cooldown(_database)
 
 @cooldown.check(10) # 10 seconds
 @bot.command(name = 'foo')
