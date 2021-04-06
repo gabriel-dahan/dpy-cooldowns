@@ -98,7 +98,7 @@ class ErrorsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, dpy_cooldowns.CommandOnCooldown):
-            await ctx.send(f"Command is on cooldown. {time[0]} {time[1]}(s) left.")
+            await ctx.send(f"Command is on cooldown.")
 ```
 You can also show how much time is remaining by importing the `psql.Connection()` instance as shown above and by using the `psql.Connection().get_time()` method. It takes the author and the command as parameters and returns a tuple with the value and the unit of the time remaining.
 
