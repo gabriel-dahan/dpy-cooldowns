@@ -8,6 +8,7 @@ Here's the [documentation](https://docs.gabrieldahan.me/dpy-cooldowns/) (not ava
 
 ### Install and Import the module :
 **Python 3.5.3 or higher.**
+
 Installing the module :
 ```bash
 ~ git clone https://github.com/gabriel-dahan/dpy-cooldowns/
@@ -22,40 +23,90 @@ Installing the module :
 Importing the module :
 ```python
 from dpy_cooldowns import psql # PostgreSQL support
+from dpy_cooldowns import mysql # MySQL support (not available at the moment)
 ```
 
 ### Example Code :
 ```python
+#### main.py ####
+...
 _database = psql.DatabaseConnection('database', 'user', 'host', 'password')
 cooldown = psql.Cooldown(_database)
 
-@cooldown.check(10) # 10 seconds
-@bot.command(name = 'foo')
+@cooldown.check(10) # 10 seconds cooldown
+@bot.command()
 async def foo(ctx):
-    await ctx.send('Test')
+    await ctx.send('Hello everyone !')
 ```
 
-Default `on_cooldown` error message is :
-
-![OnCooldown](https://imgur.com/t06bKYT.png)
-
-To edit it, just add a string or a discord.Embed object as a parameter in the Cooldown object.
-
-Example :
+## Working with Cogs
+You have to import the psql.Cooldown(...) variable from the file you instancied it.
 ```python
-embed = discord.Embed(
-    description = 'Please wait ! There are {time} {unit}(s) left before you can re-execute this command.'
-)
-db = cooldowns.DatabaseConnection('database', 'user', 'host', 'password')
+from discord.ext import commands
+from <py_path> import cooldown
 
-cooldown = cooldowns.Cooldown(db)
+# Example
+class MyCog(commands.Cog):
 
-@cooldown.check(10, on_cooldown = embed) # on_cooldown error message will be 'embed' 
-@bot.command(name = 'foo')
-async def foo(ctx):
-    await ctx.send('Test')
-``` 
+    def __init__(self, bot):
+        self.bot = bot
 
-Note that ``{time}`` is used to show the time left and ``{unit}`` the unit corresponding to the remaining time. 
+    @cooldown.check(10)
+    @commands.command()
+    async def foo(self, ctx):
+        await ctx.send("Hi everyone !")
 
-Ex : ``'{time} {unit}(s)'`` --> ``'13.5 second(s)'``
+def setup(bot):
+    bot.add_cog(MyCog(bot))
+```
+You can also add the instance to the bot variables :
+```python
+#### main.py ####
+bot.cooldown = psql.Connection(...)
+
+#### mycog.py ####
+
+# With this method, you cannot use the cooldown.check() decorator.
+# Instead, you'll have to use cooldown.add() inside the command.
+
+# Example :
+class MyCog(commands.Cog):
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command()
+    async def foo(self, ctx):
+        await self.bot.cooldown.add(10, ctx.author, ctx.command)
+        await ctx.send("Hi everyone !")
+
+def setup(bot):
+    bot.add_cog(MyCog(bot))
+```
+
+## Simple Errors Handler
+A command will raise the `dpy_cooldowns.errors.CommandOnCooldown` error if it is on cooldown, there's an example of a simple handler for it :
+```python
+from discord.ext import commands
+import dpy_cooldowns
+
+class ErrorsHandler(commands.Cog):
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, dpy_cooldowns.CommandOnCooldown):
+            await ctx.send(f"Command is on cooldown. {time[0]} {time[1]}(s) left.")
+```
+You can also show how much time is remaining by importing the `psql.Connection()` instance as shown above and by using the `psql.Connection().get_time()` method. It takes the author and the command as parameters and returns a tuple with the value and the unit of the time remaining.
+
+```python
+time = cooldown.get_time(ctx.author, ctx.command)
+
+print(time[0]) # Ex. output : 12
+print(time[1]) # Ex. output : second
+```
+
+*If you're liking the project, consider adding a star to promote it, thank you !*
