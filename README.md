@@ -40,7 +40,7 @@ async def foo(ctx):
 ```
 
 ## Working with Cogs
-You have to import the psql.Cooldown(...) variable from the file you instancied it.
+You have to import the `psql.Cooldown()` variable from the file you instancied it.
 ```python
 from discord.ext import commands
 from <py_path> import cooldown
