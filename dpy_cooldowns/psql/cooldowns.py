@@ -39,20 +39,12 @@ class Cooldown(object):
 
     def check(self, seconds: int) -> commands.check:
         """Adds a cooldown for a user on a command (as a check)."""
-        async def predicate(ctx):
-            c = await self.is_on_cooldown(ctx.author, ctx.command)
-            if c:
-                time = self._format_time(c)
-                raise CommandOnCooldown(f'Command \'{ctx.command.name}\' is already on cooldown for {ctx.author}.')
-            await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1 AND command = $2;", ctx.author.id, ctx.command.name)
-            await self._database.execute("INSERT INTO cooldowns (user_id, command, timestamp, seconds) VALUES ($1, $2, $3, $4);", ctx.author.id, ctx.command.name, datetime.now(), seconds)
-            return True
+        async def predicate(ctx): await self.add(seconds, ctx.author, ctx.command)
         return commands.check(predicate)
 
     async def add(self, seconds: int, user: Union[discord.User, discord.Member], command: commands.Command) -> None:
         """Adds a cooldown for a user on a command."""
-        c = await self.is_on_cooldown(user, command)
-        if c:
+        if await self.is_on_cooldown(user, command):
             raise CommandOnCooldown(f'Command \'{command.name}\' is already on cooldown for {user}.')
         await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1 AND command = $2;", user.id, command.name)
         await self._database.execute("INSERT INTO cooldowns (user_id, command, timestamp, seconds) VALUES ($1, $2, $3, $4);", user.id, command.name, datetime.now(), seconds)
