@@ -39,7 +39,7 @@ class Cooldown(object):
 
     def check(self, seconds: int) -> commands.check:
         """Adds a cooldown for a user on a command (as a check)."""
-        async def predicate(ctx): await self.add(seconds, ctx.author, ctx.command)
+        async def predicate(ctx): return await self.add(seconds, ctx.author, ctx.command)
         return commands.check(predicate)
 
     async def add(self, seconds: int, user: Union[discord.User, discord.Member], command: commands.Command) -> bool:
