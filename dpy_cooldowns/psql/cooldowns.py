@@ -42,12 +42,13 @@ class Cooldown(object):
         async def predicate(ctx): await self.add(seconds, ctx.author, ctx.command)
         return commands.check(predicate)
 
-    async def add(self, seconds: int, user: Union[discord.User, discord.Member], command: commands.Command) -> None:
+    async def add(self, seconds: int, user: Union[discord.User, discord.Member], command: commands.Command) -> bool:
         """Adds a cooldown for a user on a command."""
         if await self.is_on_cooldown(user, command):
             raise CommandOnCooldown(f'Command \'{command.name}\' is already on cooldown for {user}.')
         await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1 AND command = $2;", user.id, command.name)
         await self._database.execute("INSERT INTO cooldowns (user_id, command, timestamp, seconds) VALUES ($1, $2, $3, $4);", user.id, command.name, datetime.now(), seconds)
+        return True
 
     async def reset(self, user: Union[discord.User, discord.Member], command: commands.Command) -> None:
         """Resets the cooldown for a user on a command."""
