@@ -46,8 +46,7 @@ class Cooldown(object):
         """Adds a cooldown for a user on a command."""
         if await self.is_on_cooldown(user, command):
             raise CommandOnCooldown(f'Command \'{command.name}\' is already on cooldown for {user}.')
-        await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1 AND command = $2;", user.id, command.name)
-        await self._database.execute("INSERT INTO cooldowns (user_id, command, timestamp, seconds) VALUES ($1, $2, $3, $4);", user.id, command.name, datetime.now(), seconds)
+        await self._database.execute("UPDATE cooldowns SET timestamp = $1, seconds = $2 WHERE user_id = $3 AND command = $4;", datetime.now(), seconds, user.id, command.name)
         return True
 
     async def reset(self, user: Union[discord.User, discord.Member], command: commands.Command) -> None:
@@ -68,7 +67,7 @@ class Cooldown(object):
         """Get the value in seconds of the time remaining. Returns None if the user's not on cooldown."""
         data = await self._database.fetchrow("SELECT * FROM cooldowns WHERE user_id = $1 AND command = $2;", user.id, command.name)
         if data:
-            future = data["timestamp"] + timedelta(seconds = data["seconds"])
+            future = data['timestamp'] + timedelta(seconds = data['timestamp'])
             if datetime.now() <= future:
                 timeleft = future - datetime.now()
                 return timeleft.seconds + timeleft.days * (24 * 60 ** 2)
