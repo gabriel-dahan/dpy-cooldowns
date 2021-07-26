@@ -53,9 +53,12 @@ class Cooldown(object):
         """Resets the cooldown for a user on a command."""
         await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1 AND command = $2;", user.id, command.name)
     
-    async def reset_all(self, user: Union[discord.User, discord.Member]) -> None:
-        """Resets all the active cooldowns for a user."""
-        await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1;", user.id)
+    async def reset_all(self, user: Union[discord.User, discord.Member] = None) -> None:
+        """Resets all the active cooldowns (only for a user if specified)."""
+        if user: 
+            await self._database.execute("DELETE FROM cooldowns WHERE user_id = $1;", user.id)
+            return
+        await self._database.execute("DELETE FROM cooldowns;")
 
     async def get_time(self, user: Union[discord.User, discord.Member], command: commands.Command) -> Union[tuple, None]:
         """Get the value and the unit of the time remaining. Returns None if the user's not on cooldown."""
