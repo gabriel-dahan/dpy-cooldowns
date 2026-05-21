@@ -1,8 +1,9 @@
+
+**[ARCHIVE] This is an OLD project that probably doesn't work with the recent discord python API.**
+
 # dpy_cooldowns (BETA)
 
 `dpy_cooldowns` is a module that allows you to create database cooldowns with discordpy & PostgreSQL (for now).
-
-Here's the [documentation](https://docs.gabrieldahan.me/dpy-cooldowns/) (not available at the moment).
 
 ## Getting Started :
 
